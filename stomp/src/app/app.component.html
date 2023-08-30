@@ -1,0 +1,9 @@
+<form>
+  <input type="text" name="name" [(ngModel)]="websocketService.name" placeholder="Name">
+  <button type="button" (click)="websocketService.connect()">Connect</button>
+  <button type="button" (click)="websocketService.disconnect()">Disconnect</button>
+  <button type="button" (click)="websocketService.sendName()">Send Name</button>
+  <div class="greetings">
+    <div *ngFor="let greeting of websocketService.greetings">{{greeting}}</div>
+  </div>
+</form>
