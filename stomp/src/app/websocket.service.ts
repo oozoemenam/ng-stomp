@@ -10,6 +10,7 @@ export class WebsocketService {
   ws!: any;
   name: string = '';
   greetings: string[] = [];
+  connected: boolean = false;
 
   constructor() { }
 
@@ -25,18 +26,31 @@ export class WebsocketService {
       this.ws.subscribe('/user/queue/reply', (message: any) => {
         this.showGreeting(message.body);
       });
+      this.ws.subscribe('/topic/reply', (message: any) => {
+        this.showGreeting(message.body);
+      });
+      this.ws.subscribe('/topic/messages', (message: any) => {
+        this.showGreeting(message.body);
+      })
+      this.connected = true;
     }, (err: any) => {
       alert("STOMP ERROR: " + err)
     });
   }
 
   disconnect() {
-    if (this.ws !== null) this.ws.close();
+    if (this.ws !== null) this.ws.disconnect();
     console.log("Disconnected");
+    this.connected = false;
   }
 
   sendName() {
-    this.ws.send("/app/message", {}, JSON.stringify(this.name));
+    console.log('name', this.name);
+    this.ws.send("/app/message", {}, JSON.stringify({ name: this.name}));
+  }
+
+  sendToAll() {
+    this.ws.send("/app/messages", {}, JSON.stringify({ name: this.name}));
   }
 
   showGreeting(message: string) {
